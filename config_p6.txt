@@ -1,0 +1,17 @@
+User Name:ADMIN
+Password:ADMIN
+COM Port:COM6
+Baud Rate:9600
+IP:192.168.100.207
+Gateway:192.168.0.1
+TFTP:192.168.100.67
+Bootloader Name:
+Firmware Name:MBB-GEM-004-fw-1.0.0.21.img
+
+*****Commands Start From Here*****
+
+
+
+
+
+
