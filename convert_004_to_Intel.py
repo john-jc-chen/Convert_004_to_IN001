@@ -54,7 +54,7 @@ def login(username, passwd):
         print(data)
         data = serialPort.serialport.readline().decode("utf-8", errors='ignore')
     print(data)
-    time.sleep(5.0)
+    time.sleep(20.0)
     serialPort.Send("")
     serialPort.Send("")
     serialPort.Send("")
@@ -115,9 +115,9 @@ def write_log(serial_number, message):
         os.mkdir(log_dir)
 
     if os.name == 'posix':
-        file_name =log_dir + '/' + serial_number
+        file_name =log_dir + '/' + serial_number + '.log'
     else:
-        file_name =log_dir + "\\" + serial_number
+        file_name =log_dir + "\\" + serial_number + '.log'
 
     with open(file_name, 'w') as f:
         f.write("{}\n {}\n".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), message))
@@ -218,12 +218,12 @@ if serialPort.IsOpen():
                     message = serialPort.serialport.read(serialPort.serialport.in_waiting)
                     try:
                         message = message.decode("utf-8", errors='ignore')
-                        print('.', end='', flush=True)
+                        print(message, end='', flush=True)
                         #print(message)
                         if "FW PROGRAM NORMAL SUCCEEDED" in message:
                             fail = False
                         if "Please press Enter key to continue..." in message:
-                            print("Updated firmware")
+                            print("Finished updated normal firmware")
 
                             print("")
                             serialPort.Send("")
@@ -233,10 +233,52 @@ if serialPort.IsOpen():
                 if fail:
                     print("Failed to flash firmware!! Leave script!")
                     sys.exit(0)
-                time.sleep(1.0)
-                #SetNetwork("192.168.100.2", "192.168.100.100")
-                #time.sleep(0.5)
-                #serialPort.serialport.write(' '.encode("utf-8"))
+                time.sleep(0.5)
+                serialPort.Send_raw('l')
+                backspace = bytearray([8 for i in range(5)])
+                serialPort.serialport.write(backspace)
+                time.sleep(0.5)
+                OnReceiveSerialData()
+                serialPort.Send('1')
+                time.sleep(0.5)
+                OnReceiveSerialData()
+                serialPort.Send('y')
+                OnReceiveSerialData()
+                time.sleep(0.5)
+                serialPort.Send_raw('k')
+                while True:
+                    time.sleep(2.0)
+                    message = serialPort.serialport.read(serialPort.serialport.in_waiting)
+                    try:
+                        message = message.decode("utf-8", errors='ignore')
+                        print(message, end='', flush=True)
+                        # print(message)
+                        if "FW PROGRAM FALLBACK SUCCEEDED" in message:
+                            fail = False
+                        if "Please press Enter key to continue..." in message:
+                            print("Finished updated fallback firmware")
+                            print("")
+                            serialPort.Send("")
+                            break
+                    except:
+                        print('decode error')
+                if fail:
+                    print("Failed to flash firmware!! Leave script!")
+                    sys.exit(0)
+                time.sleep(0.5)
+
+                serialPort.Send_raw('l')
+                backspace = bytearray([8 for i in range(5)])
+                serialPort.serialport.write(backspace)
+                time.sleep(0.5)
+                OnReceiveSerialData()
+                serialPort.Send('0')
+                time.sleep(0.5)
+                OnReceiveSerialData()
+                serialPort.Send('y')
+                OnReceiveSerialData()
+                time.sleep(0.5)
+                SetNetwork('172.31.30.102', '172.31.33.5', '172.31.0.1')
                 print("Convert to IN-001")
                 serialPort.Send_raw('q')
                 OnReceiveSerialData()
@@ -274,14 +316,16 @@ if serialPort.IsOpen():
                 while " Supermicro Switch" not in message:
                     print(message)
                     message =serialPort.serialport.readline().decode("utf-8", errors='ignore')
-                time.sleep(3.0)
+                time.sleep(5.0)
                 login(username, passwd)
                 new_passwd = ''
                 serialPort.Send("show system information")
                 time.sleep(0.5)
                 serial_number = ''
+                message = ''
                 while serialPort.serialport.in_waiting > 0:
                     strs = serialPort.serialport.read(serialPort.serialport.in_waiting).decode("utf-8", errors='ignore')
+                    message += strs
                     m = re.findall(r"Serial\s+Number\s+\:\s?(\w+)", strs)
                     if m:
                         serial_number = m[0]
@@ -290,7 +334,7 @@ if serialPort.IsOpen():
                 OnReceiveSerialData()
                 serialPort.Send("show version")
                 time.sleep(1.0)
-                message = ''
+
                 while serialPort.serialport.in_waiting > 0:
                     message += serialPort.serialport.read(serialPort.serialport.in_waiting).decode("utf-8")
                     time.sleep(1.0)
