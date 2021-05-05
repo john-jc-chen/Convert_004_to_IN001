@@ -1,0 +1,29 @@
+2021-03-02 17:42:12
+ show system information
+Switch Name                            : SMIS
+Serial Number                          : OD204S047654
+Switch Base MAC Address                : 3c:ec:ef:4b:95:2e   
+SNMP EngineID                          : 80.00.08.1c.04.46.53
+System Contact                         : http://www.supermicro.com/support
+System Location                        : Supermicro
+Logging Option                         : Console Logging
+Login Authentication Mode              : Local
+ZTP Config Restore Option              : ZTP Enabled
+Config Restore Status                  : Not Initiated
+Base Config Restore Status             : Successful
+Config Restore Option                  : No restore
+Config Restore ZTP Filename            : 
+Config Restore ZTP TFTP IP Address     : 0.0.0.0
+Config Restore Local Filename          : iss.conf
+Base Config Restore Filename           : base.conf
+Config Save IP Address                 : 0.0.0.0
+Device Up Time                         : 0 days 0 hrs 1 mins 3 secs
+Boot-up Flash Area                     : Normal
+NTP Broadcast Mode                     : No
+
+
+[NTP] ntp is disabled
+[K--More--press q to quit--[Kshow version
+ID   Hardware Version               	Firmware    OS        Boot Loader   
+0    MBM-GEM-004-IN001 (B7-INDC R1.01)	1.0.0.21    1.0.8     1.0.0.7       
+SMIS# 
